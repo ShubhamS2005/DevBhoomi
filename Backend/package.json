@@ -16,6 +16,7 @@
     "cloudinary": "^2.5.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "express-fileupload": "^1.5.1",
@@ -26,6 +27,12 @@
     "nodemailer": "^6.9.15",
     "nodemon": "^3.1.7",
     "path": "^0.12.7",
+    "twilio": "^5.3.2",
     "validator": "^13.12.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13"
   }
 }

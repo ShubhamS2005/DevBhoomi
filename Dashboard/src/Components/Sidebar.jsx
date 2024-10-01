@@ -9,6 +9,7 @@ import { IoPersonAddSharp } from "react-icons/io5";
 import { FaBedPulse } from "react-icons/fa6";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { FaUserGraduate } from "react-icons/fa";
+import { IoIosPhonePortrait } from "react-icons/io";
 
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -43,7 +44,7 @@ const Sidebar = () => {
     setShow(!show);
   };
   const gotoMessagesPage = () => {
-    navigateTo("/messages");
+    navigateTo("/feedback");
     setShow(!show);
   };
   const gotoAddNewAdmin = () => {
@@ -60,6 +61,12 @@ const Sidebar = () => {
     navigateTo("/guides");
     setShow(!show);
 };
+
+const handleOtp = () => {
+  navigateTo("/navigation");
+  setShow(!show);
+};
+
   return (
     <>
       <nav
@@ -72,6 +79,7 @@ const Sidebar = () => {
           <FaUserGraduate onClick={gotoTourists} />
           <FaUserGraduate onClick={gotoGuides} />
           <AiOutlineUserAdd onClick={gotoAddNewAdmin} />
+          <IoIosPhonePortrait onClick={handleOtp}/>
           <RiLogoutBoxFill onClick={handleLogout} />
         </div>
       </nav>

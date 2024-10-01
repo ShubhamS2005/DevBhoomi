@@ -32,12 +32,14 @@ const Guides = () => {
         {
           Guide && Guide.length>0 ? (Guide.map(element=>{
             return(
-              <div className="card">
+              <div className="card" >
                 <img src={element.userAvatar && element.userAvatar.url} alt="Guide Avatar" />
                 <h4>{`${element.firstname} ${element.lastname}`}</h4>
                 <div className="details">
                   <p>Email: <span>{element.email}</span></p>
                   <p>Phone: <span>{element.phone}</span></p>
+                  <p>Prefered Language: <span>{element.preferedLanguage}</span></p>
+
                 </div>
               </div>
             )

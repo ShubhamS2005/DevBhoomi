@@ -48,9 +48,13 @@ const userScheema=new mongoose.Schema({
             type:String,
         },
     },
-    toatlJourneys:{
+    totalJourneys:{
         type:Number,
+    },
+    preferedLanguage:{
+        type:String,
     }
+
     
 })
 

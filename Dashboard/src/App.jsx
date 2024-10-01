@@ -13,6 +13,9 @@ import Sidebar from "./components/Sidebar.jsx"
 import Tourists from './Components/Tourists.jsx';
 import AddNewAdmin from './Components/AddNewAdmin.jsx';
 import Guides from './Components/Guides.jsx';
+import Feedback from './Components/FeedBack.jsx';
+import OTPComponent from '../../Frontend/src/components/OtpComponent.jsx';
+
 
 
 function App() {
@@ -46,6 +49,9 @@ function App() {
       <Route path='/tourists' element={<Tourists/>}/>
       <Route path='/admin/addnew' element={<AddNewAdmin/>}/>
       <Route path='/guides' element={<Guides/>}/>
+      <Route path='/feedback' element={<Feedback/>}/>
+
+
 
 
 

@@ -30,8 +30,8 @@ export const UserRegister=catchAsyncErrors(async(req,res,next)=>{
     }
     
 
-    const{firstname,lastname,email,phone,password,role}=req.body
-    if(!firstname||!lastname||!email||!phone||!password||!role){
+    const{firstname,lastname,email,phone,password,role,preferedLanguage}=req.body
+    if(!firstname||!lastname||!email||!phone||!password||!role||!preferedLanguage){
         return next(new ErrorHandler("Please fill full form",400));
     }
     const user=await User.findOne({email})
@@ -40,7 +40,7 @@ export const UserRegister=catchAsyncErrors(async(req,res,next)=>{
     }
     else{
         const userData=await User.create({
-            firstname,lastname,email,phone,password,role,
+            firstname,lastname,email,phone,password,role,preferedLanguage,
             userAvatar: {
                 public_id: cloudinaryResponse.public_id,
                 url: cloudinaryResponse.secure_url,
@@ -169,6 +169,15 @@ export const GetAllGuides=catchAsyncErrors(async(req,res,next)=>{
     })
 })
 
+export const GetGuide=catchAsyncErrors(async(req,res,next)=>{
+    const {id}=req.params
+    let Guide=await User.findById(id)
+    res.status(200).json({
+        success:true,
+        Guide
+    })
+})
+
 export const GetAllTourist=catchAsyncErrors(async(req,res,next)=>{
     const Tourists=await User.find({role:"Tourist"})
     res.status(200).json({
@@ -217,3 +226,94 @@ export const GuideLogout=catchAsyncErrors(async(req,res,next)=>{
         message:"Guide Log out succesfully"
     })
 })
+
+export const UpdateUserElement=catchAsyncErrors(async(req,res,next)=>{
+    const {id}=req.params
+    let user=await User.findById(id)
+    if(!user){
+       return next(new ErrorHandler("User Not Found",404)) 
+    }
+    user=await User.findByIdAndUpdate(id,req.body,{
+        new:true,
+        runValidators:true,
+        useFindAndModify:false,
+    })
+    res.status(200).json({
+        success:true,
+        message:"Status Updated",
+        user,
+    })
+  })
+
+  export const sendmail1=async(Guide,id)=>{
+    try {
+        const transpoter=nodemailer.createTransport({
+            host:'smtp.gmail.com',
+            port:465,
+            requireTLS:true,
+            auth:{
+                user:process.env.EMAIL_USER,
+                pass:process.env.PASSWORD_USER
+            }
+        });
+        const mailoptions={
+            from:process.env.EMAIL_USER,
+            to:Guide,
+            subject:'Videochat of DevBhoomi',
+            html:`<p>Hii ,this email is send to inform you that you are booked for the guiding a person with this video call the lobby id is 1 <a href="http:/localhost:5175/lobby">Video Confrence</a> </p>`
+        }
+  
+        transpoter.sendMail(mailoptions,function(error,info){
+            if(error){
+                console.log(error);
+            }
+            else{
+                console.log("Email has been sent:- ",info.response);
+            }
+        })
+    } catch (error) {
+        console.log(error.message);
+    }
+  }
+
+  export const sendmail2=async(tourist,id)=>{
+    try {
+        const transpoter=nodemailer.createTransport({
+            host:'smtp.gmail.com',
+            port:465,
+            requireTLS:true,
+            auth:{
+                user:process.env.EMAIL_USER,
+                pass:process.env.PASSWORD_USER
+            }
+        });
+        const mailoptions={
+            from:process.env.EMAIL_USER,
+            to:tourist,
+           subject:'Videochat of DevBhoomi',
+            html:`<p>Hii ,this email is send to inform you that you are booked for the guiding a person with this video call the lobby id is 1 <a href="http:/localhost:5175/lobby">Video Confrence</a> </p>`
+        }
+  
+        transpoter.sendMail(mailoptions,function(error,info){
+            if(error){
+                console.log(error);
+            }
+            else{
+                console.log("Email has been sent:- ",info.response);
+            }
+        })
+    } catch (error) {
+        console.log(error.message);
+    }
+  }
+
+  export const sendVCMail=catchAsyncErrors(async(req,res,next)=>{
+    const {id}=req.params
+    const user=await User.findById(id);
+    sendmail1(user.email,user._id)
+    res.status(200).json({
+        success:true,
+        message:"VC Mail send",
+        user,
+    })
+  })

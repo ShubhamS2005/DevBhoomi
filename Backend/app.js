@@ -7,8 +7,11 @@ import mongoose from "mongoose";
 import cloudinary from "cloudinary"
 import {errormiddleware} from "./middleware/errormiddleware.js"
 import user_router from "./router/userRouter.js";
+import appointment_router from "./router/journeyRouter.js";
 import { User } from "./models/user_scheema.js";
-
+import twilio from "twilio"
+import crypto from "crypto"
+// import router from "./router/chatRoute.js"
 const app=express();
 
 config({path:"./config/config.env"})
@@ -47,8 +50,9 @@ app.get("/verify",async(req,res)=>{
     console.log(updateInfo);
     res.redirect(`${process.env.FRONTEND_URL}`)
 })
+app.use("/api/v1/journey",appointment_router)
+
 // app.use("/api/v1/message",messageRouter)
-// app.use("/api/v1/appointment",appointment_router)
 
 
 
@@ -68,6 +72,74 @@ cloudinary.v2.config({
     api_secret:process.env.CLOUDINARY_API_SECRET
     
 })
+
+// Twilio configuration
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+// Store OTP temporarily 
+let otps = {};
+
+// Function to generate OTP
+const generateOTP = () => {
+    return crypto.randomInt(100000, 999999).toString(); // 6 digit OTP
+};
+
+
+// Routes
+// app.use('/api/chat', router);
+
+// Set up Socket.io (optional)
+// const server = require('http').createServer(app);
+// const io = require('socket.io')(server, {
+//   cors: {
+//     origin: '*',
+//   }
+// });
+
+// io.on('connection', socket => {
+//     console.log('User connected');
+//     socket.on('sendMessage', (message) => {
+//       socket.broadcast.emit('receiveMessage', message);
+//     });
+//   });
+
+
+
+// Route to send OTP
+app.post('/send-otp', async (req, res) => {
+    const { phoneNumber } = req.body; // Phone number of the user
+    const otp = generateOTP();
+
+    // Store OTP with a timeout or in a DB
+    otps[phoneNumber] = otp;
+
+    try {
+        // Send OTP via SMS
+        await client.messages.create({
+            body: `Your OTP for the drive by the guide is ${otp}.`,
+            from: process.env.TWILIO_PHONE_NUMBER, // Your Twilio number
+            to: phoneNumber
+        });
+
+        return res.status(200).json({ message: 'OTP sent successfully!' });
+    } catch (error) {
+        console.error('Error sending OTP:', error);
+        return res.status(500).json({ message: 'Error sending OTP' });
+    }
+});
+
+// Route to verify OTP
+app.post('/verify-otp', (req, res) => {
+    const { phoneNumber, otp } = req.body;
+
+    if (otps[phoneNumber] && otps[phoneNumber] === otp) {
+        delete otps[phoneNumber]; // Remove OTP after successful verification
+        return res.status(200).json({ message: 'OTP verified successfully!' });
+    }
+
+    return res.status(400).json({ message: 'Invalid OTP' });
+});
+
 
 // middleware error
 app.use(errormiddleware)
