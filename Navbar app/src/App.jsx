@@ -12,8 +12,8 @@ function App() {
   return (
     <>
       {/* <Navbar/> */}
-      {/* <Login/> */}
-       <Signup/>
+      <Login/>
+       {/* <Signup/> */}
       {/* <Carousel1/> */}
       {/* <FeedbackForm/> */}
 
