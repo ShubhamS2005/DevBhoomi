@@ -13,7 +13,7 @@ function App() {
     <>
       <Navbar/>
       <Login/>
-       {/* <Signup/> */}
+       <Signup/>
       {/* <Carousel1/> */}
       {/* <FeedbackForm/> */}
 
